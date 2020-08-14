@@ -29,7 +29,6 @@ pipeline {
             steps{
                 sh "$token | docker login --username captainbelal --password-stdin"
                 sh "docker push $registry:$BUILD_NUMBER"
-                }
             }
         }
         stage('Clean UP'){
