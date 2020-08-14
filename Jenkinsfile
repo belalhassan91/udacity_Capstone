@@ -12,5 +12,10 @@ pipeline {
                 sh 'hadolint Dockerfile' 
             }
         }
+        stage('Build Docker Image') { 
+            steps { 
+                sh 'run_docker.sh' 
+            }
+        }        
     }      
 }

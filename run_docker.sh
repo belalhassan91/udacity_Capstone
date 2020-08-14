@@ -1,2 +1,4 @@
-docker build -t captainbelal/udacity_capstone:v1 .
-docker push captainbelal/udacity_capstone:v1
+DockerTagNum="v $DockerBuildVersion"
+docker build -t captainbelal/udacity_capstone:$DockerTagNum .
+docker push captainbelal/udacity_capstone:$DockerTagNum
+export DockerBuildVersion=$(($DockerBuildVersion+1))
