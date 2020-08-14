@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Push Docker Image to Docker Hub'){
             steps{
-                sh "$registryToken | docker login --username captainbelal --password-stdin"
+                sh "docker login --username captainbelal -p $registryToken"
                 sh "docker push $registry:$BUILD_NUMBER"
             }
         }
