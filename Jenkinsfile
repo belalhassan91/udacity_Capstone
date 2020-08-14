@@ -2,7 +2,7 @@ pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
 	        registryCredential = 'Docker'
-            token = 'token' 
+            registryToken = 'token' 
 	        dockerImage = '' 
 	}
     agent any
@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Push Docker Image to Docker Hub'){
             steps{
-                sh "$token | docker login --username captainbelal --password-stdin"
+                sh "$registryToken | docker login --username captainbelal --password-stdin"
                 sh "docker push $registry:$BUILD_NUMBER"
             }
         }
