@@ -7,5 +7,10 @@ pipeline {
                 sh 'tidy -q -e *.html'
             }
         }
-    }
+        stage('Linting DockerFile') { 
+            steps { 
+                sh 'hadolint Dockerfile' 
+            }
+        }
+    }      
 }
