@@ -4,6 +4,7 @@ pipeline {
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
 	        dockerImage = ''
+            EC2IP = ''
 	}
     agent any
     stages {
