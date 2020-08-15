@@ -40,7 +40,6 @@ pipeline {
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh 'echo "Create CF Stack"'
-                    sh 'aws iam get-user'
                     sh 'aws cloudformation create-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json'
                 }
             }
