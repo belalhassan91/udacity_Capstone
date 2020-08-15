@@ -40,7 +40,7 @@ pipeline {
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh 'echo "Create CF Stack"'
-                    cfnUpdate(stack:'udacity-capstone-stack', file:'project.yaml', params:'project-parameters.json', keepParams:['Version'], timeoutInMinutes:10,onFailure:'ROLLBACK')
+                    cfnUpdate(stack:'udacity-capstone-stack', file:'project.yaml', params:'project-parameters.json', keepParams:['Version'], timeoutInMinutes:10,onFailure:'ROLLBACK',create: 'true')
                 }
             }
         }        
