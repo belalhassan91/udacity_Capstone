@@ -69,7 +69,7 @@ pipeline {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh ''' 
                         EC2IP=$( aws ec2 describe-instances --filters "Name=tag-value,Values=KubernatesInstance" --query Reservations[*].Instances[*].[PublicIpAddress] --output text )
-                        echo $EC2IP > ec2ip.txt
+                        echo $EC2IP > /tmp/ec2ip.txt
                     '''
                 }
             }
@@ -78,7 +78,7 @@ pipeline {
             steps{
                 sshagent (credentials: ['key']) {
                     sh '''
-                        EC2IP=$(<ec2ip.txt);
+                        EC2IP=$(</tmp/ec2ip.txt);
                         ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP
                     '''
                     sh "minikube start"
