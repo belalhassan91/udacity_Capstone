@@ -60,11 +60,13 @@ pipeline {
             }
         }
         stage('Deploy to EC2'){
-            sshagent (credentials: ['key']) {
-                sh "ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP"
-                sh "minikube start"
-                sh  "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
-                sh  "kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&"
+            steps{
+                sshagent (credentials: ['key']) {
+                    sh "ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP"
+                    sh "minikube start"
+                    sh  "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
+                    sh  "kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&"
+                }
             }
         }        
     }      
