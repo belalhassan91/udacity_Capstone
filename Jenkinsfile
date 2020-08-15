@@ -83,7 +83,16 @@ pipeline {
                     minikube start
                     kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
                     kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&
-                '''   
+                '''
+                def remote = [:]
+                remote.name = "kubernates"
+                remote.host = "35.166.218.78"
+                remote.allowAnyHosts = true
+                withCredentials([key(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                    remote.user = userName
+                    remote.identityFile = identity
+                    sshCommand remote: remote, command: 'echo "Hello"'
+                }   
             }
         }        
     }      
