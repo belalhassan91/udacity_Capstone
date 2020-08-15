@@ -1,3 +1,4 @@
+def remote = [:]
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -77,7 +78,6 @@ pipeline {
         }
         stage('Deploy to EC2'){
             steps{
-                def remote = [:]
                 remote.name = "kubernates"
                 remote.host = "35.166.218.78"
                 remote.allowAnyHosts = true
