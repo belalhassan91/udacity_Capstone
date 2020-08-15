@@ -49,8 +49,26 @@ pipeline {
                             echo "\nWaiting for stack to be created ..."
                             aws cloudformation wait stack-create-complete --stack-name udacity-capstone
                         else
-                            echo -e "\nStack exists, attempting update ..."
-                            aws cloudformation update-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json --no-fail-on-empty-changeset
+                            echo -e "\nStack exists, attempting update ..."                    
+                            set +e
+                            update_output=$( aws cloudformation update-stack \
+                                --stack-name udacity-capstone \
+                                --template-body file://project.yml  --parameters file://project-parameters.json  2>&1)
+                            status=$?
+                            set -e
+
+                            echo "$update_output"
+
+                            if [ $status -ne 0 ] ; then
+
+                                # Don't fail for no-op update
+                                if [[ $update_output == *"ValidationError"* && $update_output == *"No updates"* ]] ; then
+                                    echo -e "\nFinished create/update - no updates to be performed"
+                                    exit 0
+                                else
+                                    exit $status
+                                fi
+                            fi
                             echo "\nWaiting for stack update to complete ..."
                             aws cloudformation wait stack-update-complete --stack-name udacity-capstone
                         fi
