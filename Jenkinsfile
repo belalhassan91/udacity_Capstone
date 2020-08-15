@@ -1,10 +1,10 @@
-EC2IP = 'initial' 
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
 	        dockerImage = ''
+            EC2IP = '127.0.0.1'
 	}
     agent any
     stages {
@@ -75,10 +75,11 @@ pipeline {
         stage('Deploy to EC2'){
             steps{
                 sshagent (credentials: ['key']) {
+                    sh "echo $EC2IP"
                     sh "ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP"
                     sh "minikube start"
-                    sh  "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
-                    sh  "kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&"
+                    sh "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
+                    sh "kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&"
                 }
             }
         }        
