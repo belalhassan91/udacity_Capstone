@@ -146,6 +146,7 @@ Resources:
           apt-get update -y
           curl -fsSL https://get.docker.com -o get-docker.sh
           sh get-docker.sh
+          chmod 666 /var/run/docker.sock
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
