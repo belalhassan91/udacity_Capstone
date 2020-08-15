@@ -1,10 +1,10 @@
+EC2IP = 'initial' 
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
 	        dockerImage = ''
-            EC2IP = '' 
 	}
     agent any
     stages {
