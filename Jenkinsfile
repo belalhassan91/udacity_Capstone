@@ -68,7 +68,7 @@ pipeline {
         stage('Get EC2 IP'){
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
-                    sh 'EC2IP = $( aws ec2 describe-instances --filters "Name=tag-value,Values=KubernatesInstance" --query Reservations[*].Instances[*].[PublicIpAddress] --output text )'
+                    sh 'EC2IP=$( aws ec2 describe-instances --filters "Name=tag-value,Values=KubernatesInstance" --query Reservations[*].Instances[*].[PublicIpAddress] --output text )'
                 }
             }
         }
