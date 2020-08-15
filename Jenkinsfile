@@ -78,7 +78,7 @@ pipeline {
             steps{
                 sshagent (credentials: ['key']) {
                     sh '''
-                        EC2IP=$(<ec2ip.txt)
+                        EC2IP=$(<ec2ip.txt);
                         ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP
                     '''
                     sh "minikube start"
