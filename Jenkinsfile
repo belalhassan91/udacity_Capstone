@@ -53,9 +53,7 @@ pipeline {
                             set +e
                             update_output=$( aws cloudformation update-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json  2>&1)
                             status=$?
-                            set -e
-                            echo "$update_output"
-
+                            set -e                        
                             if [ $status -ne 0 ] ; then
 
                                 # Don't fail for no-op update
