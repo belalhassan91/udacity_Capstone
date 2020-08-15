@@ -55,15 +55,7 @@ pipeline {
                             status=$?
                             set -e                        
                             if [ $status -ne 0 ] ; then
-
-                                # Don't fail for no-op update
-                                if (( $update_output == *"ValidationError"* && $update_output == *"No updates"* )) ; 
-                                then
-                                    echo -e "\nFinished create/update - no updates to be performed"
-                                    exit 0
-                                else
-                                    exit $status
-                                fi
+                                echo -e "\nFinished create/update - no updates to be performed"
                             fi
                             echo "\nWaiting for stack update to complete ..."
                             aws cloudformation wait stack-update-complete --stack-name udacity-capstone
