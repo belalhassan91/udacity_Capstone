@@ -144,7 +144,14 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           apt-get update -y
-          apt-get install apache2 -y
-          systemctl start apache2.service
-          cd /var/www/html
-          echo "Udacity Demo Web Server Up and Running!" > index.html
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
+          mkdir -p /usr/local/bin/
+          install minikube /usr/local/bin/
+          minikube start
+          kubectl create deployment udacity-capstone --image=captainbelal/udacity_capstone:36
+          kubectl port-forward deployment/kubernetes-project --address 0.0.0.0 80:80&
