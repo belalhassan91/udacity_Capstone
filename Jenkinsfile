@@ -1,4 +1,3 @@
-def remote = [:]
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -75,25 +74,21 @@ pipeline {
                     '''
                 }
             }
-        }
-        stage('Deploy to EC2'){
-            steps{
-                remote.name = "kubernates"
-                remote.host = "35.166.218.78"
-                remote.allowAnyHosts = true
-                withCredentials([key(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                    remote.user = userName
-                    remote.identityFile = identity
-                    sshCommand remote: remote, command: 'echo "Hello"'
-                sh '''
-                    EC2IP=$(cat /tmp/ec2ip.txt)
-                    ssh -vvv -i $key -o StrictHostKeyChecking=no -T ubuntu@$EC2IP;
-                    minikube start
-                    kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
-                    kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&
-                '''
-                }   
-            }
-        }        
+        }      
     }      
+}
+
+def remote = [:]
+remote.name = "Kubernates"
+remote.host = "35.166.218.78"
+remote.allowAnyHosts = true
+
+node {
+    withCredentials([Key(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.identityFile = identity
+        stage("SSH Steps Rocks!") {
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+        }
+    }
 }
