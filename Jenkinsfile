@@ -56,9 +56,10 @@ pipeline {
                             set -e                        
                             if [ $status -ne 0 ] ; then
                                 echo -e "\nFinished create/update - no updates to be performed"
-                            fi
-                            echo "\nWaiting for stack update to complete ..."
-                            aws cloudformation wait stack-update-complete --stack-name udacity-capstone
+                            else
+                                echo "\nWaiting for stack update to complete ..."
+                                aws cloudformation wait stack-update-complete --stack-name udacity-capstone
+                            fi                            
                         fi
                     '''
                 }
