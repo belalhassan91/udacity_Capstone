@@ -31,9 +31,17 @@ pipeline {
                 sh "docker push $registry:$BUILD_NUMBER"
             }
         }
-        stage('Clean UP'){
+        stage('Clean UP Docker Image from machine'){
             steps { 
                 sh "docker rmi $registry:$BUILD_NUMBER" 
+            }
+        }
+        stage('Upload to AWS'){
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh 'echo "Create CF Stack"'
+                    def outputs = cfnUpdate(stack:'udacity-capstone-stack', file:'project.yaml', params:'project-parameters.json', keepParams:['Version'], timeoutInMinutes:10, pollInterval:1000,onFailure:'ROLLBACK')
+                }
             }
         }        
     }      

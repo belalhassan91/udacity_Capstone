@@ -1,0 +1,150 @@
+Description: >
+    Belal Mohamed / Udacity
+    This template deploys a VPC, with a pair of public subnet spread 
+    across one Availabilty Zones. It deploys an Internet Gateway, with a default 
+    route on the public subnets. it deploy ec2 with kubernates setups
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  VpcCIDR: 
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.0.0/24
+
+Resources:
+#############################################################
+######Network Resources######################################
+#############################################################
+  VPC: 
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsHostnames: true
+      Tags: 
+        - Key: Name 
+          Value: !Ref EnvironmentName
+          
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+          
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicSubnet1: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+  #Elastic IP1
+  EC21EIP:
+      Type: AWS::EC2::EIP
+      DependsOn: InternetGatewayAttachment
+      Properties: 
+          Domain: vpc
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} Public Routes
+  
+  DefaultPublicRoute: 
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+#########################################################
+#add Server Resources####################################
+#########################################################
+  EC2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to our load balancer
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+
+  EC2NetworkInterface:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      Description: Interface EC2 host kubernates
+      GroupSet: 
+      - !Ref EC2SecGroup
+      SourceDestCheck: true
+      Tags:
+        -
+          Key: Network
+          Value: Control
+
+  AssociateEC2EIP:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt EC21EIP.AllocationId
+      NetworkInterfaceId: !Ref EC2NetworkInterface
+      
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-003634241a8fcdec0
+      KeyName: jenkins-key-pair-Oregon
+      InstanceType: t3.medium
+      NetworkInterfaces:
+        -
+          NetworkInterfaceId: !Ref EC2NetworkInterface
+          DeviceIndex: 0
+          
+      Tags:
+        -
+          Key: Name
+          Value: Kubernates Instance
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt-get update -y
+          apt-get install apache2 -y
+          systemctl start apache2.service
+          cd /var/www/html
+          echo "Udacity Demo Web Server Up and Running!" > index.html
