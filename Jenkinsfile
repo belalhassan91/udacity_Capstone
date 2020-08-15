@@ -77,13 +77,6 @@ pipeline {
         }
         stage('Deploy to EC2'){
             steps{
-                sh '''
-                    EC2IP=$(cat /tmp/ec2ip.txt)
-                    ssh -vvv -i $key -o StrictHostKeyChecking=no -T ubuntu@$EC2IP;
-                    minikube start
-                    kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
-                    kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&
-                '''
                 def remote = [:]
                 remote.name = "kubernates"
                 remote.host = "35.166.218.78"
@@ -92,6 +85,13 @@ pipeline {
                     remote.user = userName
                     remote.identityFile = identity
                     sshCommand remote: remote, command: 'echo "Hello"'
+                sh '''
+                    EC2IP=$(cat /tmp/ec2ip.txt)
+                    ssh -vvv -i $key -o StrictHostKeyChecking=no -T ubuntu@$EC2IP;
+                    minikube start
+                    kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                    kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&
+                '''
                 }   
             }
         }        
