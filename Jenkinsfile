@@ -36,11 +36,24 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER" 
             }
         }
-        stage('Upload to AWS'){
+        stage('CloudFormation Create or Update'){
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh 'echo "Create CF Stack"'
-                    sh 'aws cloudformation create-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json'
+                    sh '''
+                        echo "\nChecking if stack exists ..."
+                        if ! aws cloudformation describe-stacks --stack-name udacity-capstone ; then
+                            echo -e "\nStack does not exist, creating ..."
+                            aws cloudformation create-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json
+                            echo "\nWaiting for stack to be created ..."
+                            aws cloudformation wait stack-create-complete --stack-name udacity-capstone
+                        else
+                            echo -e "\nStack exists, attempting update ..."
+                            aws cloudformation update-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json
+                            echo "\nWaiting for stack update to complete ..."
+                            aws cloudformation wait stack-update-complete --stack-name udacity-capstone
+                        fi
+                    '''
                 }
             }
         }        
