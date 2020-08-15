@@ -3,7 +3,8 @@ pipeline {
 	        registry = "captainbelal/udacity_capstone" 
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
-	        dockerImage = '' 
+	        dockerImage = ''
+            EC2IP = '' 
 	}
     agent any
     stages {
@@ -54,7 +55,16 @@ pipeline {
                             aws cloudformation wait stack-update-complete --stack-name udacity-capstone
                         fi
                     '''
+                    sh 'EC2IP = `aws ec2 describe-instances --filters "Naame=tag-value,Values=KubernatesInstance" --query Reservations[*].Instances[*].[PublicIpAddress] --output text'
                 }
+            }
+        }
+        stage('Deploy to EC2'){
+            sshagent (credentials: ['key']) {
+                sh "ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP"
+                sh "minikube start"
+                sh  "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
+                sh  "kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&"
             }
         }        
     }      
