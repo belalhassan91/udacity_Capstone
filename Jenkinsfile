@@ -50,7 +50,7 @@ pipeline {
                             aws cloudformation wait stack-create-complete --stack-name udacity-capstone
                         else
                             echo -e "\nStack exists, attempting update ..."
-                            aws cloudformation update-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json
+                            aws cloudformation update-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json --no-fail-on-empty-changeset
                             echo "\nWaiting for stack update to complete ..."
                             aws cloudformation wait stack-update-complete --stack-name udacity-capstone
                         fi
