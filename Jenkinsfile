@@ -4,6 +4,7 @@ pipeline {
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
 	        dockerImage = ''
+            key = credentials('key') 
 	}
     agent any
     stages {
@@ -76,7 +77,7 @@ pipeline {
         }
         stage('Deploy to EC2'){
             steps{
-                sshagent (credentials: ['key']) {
+                sshagent (['key']) {
                     sh '''
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP
