@@ -77,7 +77,7 @@ pipeline {
         stage('Deploy to EC2'){
             steps{
                 sshagent (credentials: ['key']) {
-                    sh "EC2IP=$(cat /tmp/ec2ip.txt)"
+                    sh 'EC2IP=$(cat /tmp/ec2ip.txt)'
                     sh "ssh -vvv -o StrictHostKeyChecking=no -T ubuntu@$EC2IP"
                     sh "minikube start"
                     sh "kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER"
