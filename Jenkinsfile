@@ -75,7 +75,7 @@ pipeline {
                 }
                 script{
                     sshagent (credentials: ['key']) {
-                        sh 'ssh -o StrictHostKeyChecking=no -l cloudbees 35.166.218.78 uname -a'
+                        sh 'ssh -o StrictHostKeyChecking=no -l ubuntu 35.166.218.78 uname -a'
                     }
                 }
             }
