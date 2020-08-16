@@ -73,22 +73,12 @@ pipeline {
                         echo $EC2IP > /tmp/ec2ip.txt
                     '''
                 }
+                node {
+                    sshagent (credentials: ['key']) {
+                        sh 'ssh -o StrictHostKeyChecking=no -l cloudbees 35.166.218.78 uname -a'
+                    }
+                }
             }
         }      
     }      
-}
-
-def remote = [:]
-remote.name = "Kubernates"
-remote.host = "35.166.218.78"
-remote.allowAnyHosts = true
-
-node {
-    withCredentials([Key(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-        remote.user = userName
-        remote.identityFile = identity
-        stage("SSH Steps Rocks!") {
-            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
-        }
-    }
 }
