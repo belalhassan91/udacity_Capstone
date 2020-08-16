@@ -73,7 +73,7 @@ pipeline {
                         echo $EC2IP > /tmp/ec2ip.txt
                     '''
                 }
-                node {
+                script{
                     sshagent (credentials: ['key']) {
                         sh 'ssh -o StrictHostKeyChecking=no -l cloudbees 35.166.218.78 uname -a'
                     }
