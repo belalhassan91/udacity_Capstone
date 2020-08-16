@@ -144,6 +144,7 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           apt-get update -y
+          apt install git
           apt-get update && apt-get install docker.io -y
           sudo chmod 666 /var/run/docker.sock
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -152,6 +153,8 @@ Resources:
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
           mkdir -p /usr/local/bin/
           sudo install minikube /usr/local/bin/
+          cd /home/ubuntu
           git clone https://github.com/belalhassan91/udacity_Capstone.git
-          sudo sh ./udacity_Capstone/run_kubernates.sh
+          cd udacity_Capstone
+          sudo sh run_kubernates.sh
           
