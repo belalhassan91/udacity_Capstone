@@ -129,7 +129,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-003634241a8fcdec0
-      KeyName: jenkins-key-pair-Oregon
+      KeyName: kubernates-key-pair-Oregon
       InstanceType: t3.medium
       NetworkInterfaces:
         -
