@@ -71,6 +71,7 @@ pipeline {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh ''' 
                         EC2IP=$( aws ec2 describe-instances --filters "Name=tag-value,Values=KubernatesInstance" --query Reservations[*].Instances[*].[PublicIpAddress] --output text )
+                        rm -f /tmp/ec2ip.txt
                         echo $EC2IP > /tmp/ec2ip.txt
                     '''
                 }
