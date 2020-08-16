@@ -83,8 +83,9 @@ pipeline {
                     sshagent (credentials: ['kubernates']) {
                         sh '''
                         EC2IP=$(cat /tmp/ec2ip.txt)
-						ssh_output=$( ssh -o StrictHostKeyChecking=no -l root $EC2IP sh udacity_Capstone/run_kubernates.sh)
-                        echo $ssh_output
+                        ssh -o StrictHostKeyChecking=no -l ubntu $EC2IP minikube start
+						ssh -o StrictHostKeyChecking=no -l ubntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                        ssh -o StrictHostKeyChecking=no -l ubntu $EC2IP sudo sh udacity_Capstone/run_kubernates.sh
                         '''
                     }
                 }
