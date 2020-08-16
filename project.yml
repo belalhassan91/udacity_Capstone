@@ -150,16 +150,14 @@ Resources:
           apt-get update && apt-get install docker.io -y
           systemctl enable docker
           systemctl start docker
-          sudo chmod 666 /var/run/docker.sock
+          chmod 666 /var/run/docker.sock
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+          mv ./kubectl /usr/local/bin/kubectl
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
           mkdir -p /usr/local/bin/
-          sudo install minikube /usr/local/bin/
+          install minikube /usr/local/bin/
           cd ~
           git clone https://github.com/belalhassan91/udacity_Capstone.git
           cd udacity_Capstone
-          chmod +x run_kubernates.sh
-          crontab -l > file; echo "@reboot /home/root/udacity_Capstone/run_kubernates.sh" >> file; crontab file;
-          reboot          
+          chmod +x run_kubernates.sh        
