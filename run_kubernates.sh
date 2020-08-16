@@ -1,3 +1,3 @@
 #!/bin/bash
 sleep 30
-nohop kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80 &
+nohup kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80 &
