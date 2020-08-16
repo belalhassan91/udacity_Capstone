@@ -161,4 +161,5 @@ Resources:
           git clone https://github.com/belalhassan91/udacity_Capstone.git
           cd udacity_Capstone
           chmod +x run_kubernates.sh
-          ./run_kubernates.sh          
+          crontab -l > file; echo "@reboot /home/root/udacity_Capstone/run_kubernates.sh" >> file; crontab file;
+          reboot          
