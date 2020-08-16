@@ -143,11 +143,13 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          sudo -i
           apt-get update -y
-          apt install git
-          apt install conntrack
+          apt install git -y
+          apt install conntrack -y
+          apt-get -y install socat
           apt-get update && apt-get install docker.io -y
+          systemctl enable docker
+          systemctl start docker
           sudo chmod 666 /var/run/docker.sock
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x ./kubectl
@@ -159,4 +161,4 @@ Resources:
           git clone https://github.com/belalhassan91/udacity_Capstone.git
           cd udacity_Capstone
           chmod +x run_kubernates.sh
-          ./run_kubernates.sh &          
+          ./run_kubernates.sh          
