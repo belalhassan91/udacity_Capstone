@@ -4,7 +4,8 @@ pipeline {
 	        registryCredential = 'Docker'
             registryToken = credentials('token') 
 	        dockerImage = ''
-            key = credentials('key') 
+            key = credentials('key')
+			kubernates = credentials('kubernates') 
 	}
     agent any
     stages {
@@ -78,9 +79,13 @@ pipeline {
         stage('Deploy Kubernates to EC2'){
             steps{
                 script{
-                    sshagent (credentials: ['key']) {
+                    sshagent (credentials: ['kubernates']) {
                         sh '''
+						export JENKINS_NODE_COOKIE=dontKillMe
                         EC2IP=$(cat /tmp/ec2ip.txt)
+						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
+						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80 &
                         '''
                     }
                 }

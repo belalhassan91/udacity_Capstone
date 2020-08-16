@@ -143,6 +143,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          sudo -i
           apt-get update -y
           apt install git
           apt install conntrack
@@ -154,7 +155,6 @@ Resources:
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
           mkdir -p /usr/local/bin/
           sudo install minikube /usr/local/bin/
-          sudo -i
           cd ~
           git clone https://github.com/belalhassan91/udacity_Capstone.git
           cd udacity_Capstone
