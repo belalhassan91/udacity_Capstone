@@ -85,7 +85,7 @@ pipeline {
                         EC2IP=$(cat /tmp/ec2ip.txt)
 						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
 						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
-						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80 &
+						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP nohup kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80 &
                         '''
                     }
                 }
