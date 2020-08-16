@@ -65,7 +65,7 @@ pipeline {
                 }
             }
         }
-        stage('Get EC2 IP'){
+        stage('Get EC2 IP and start minikube'){
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh ''' 
@@ -75,7 +75,12 @@ pipeline {
                 }
                 script{
                     sshagent (credentials: ['key']) {
-                        sh 'ssh -o StrictHostKeyChecking=no -l ubuntu 35.166.218.78 uname -a'
+                        sh '''
+                        EC2IP=$(cat /tmp/ec2ip.txt)
+                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
+                        kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                        kubectl port-forward deployment/udacity-capstone --address 0.0.0.0 80:80&
+                        '''
                     }
                 }
             }
