@@ -83,7 +83,8 @@ pipeline {
                     sshagent (credentials: ['kubernates']) {
                         sh '''
                         EC2IP=$(cat /tmp/ec2ip.txt)
-						ssh -o StrictHostKeyChecking=no -l root $EC2IP sh udacity_Capstone/run_kubernates.sh
+						ssh_output=$( ssh -o StrictHostKeyChecking=no -l root $EC2IP sh udacity_Capstone/run_kubernates.sh)
+                        echo $ssh_output
                         '''
                     }
                 }
