@@ -120,7 +120,7 @@ pipeline {
         }
         stage('Kubernates Rolling Out'){
             when {
-                expression { checkDeployment != "" }
+                expression { checkDeployment != null }
             }
             steps{
                 script{
