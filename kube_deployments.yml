@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: udacity-capstone
-        image: captainbelal/udacity_capstone
+        image: captainbelal/udacity_capstone:BUILD_NUMBER
         ports:
         - containerPort: 80

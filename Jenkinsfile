@@ -103,7 +103,8 @@ pipeline {
                             EC2IP=$(cat /tmp/ec2ip.txt)
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube addons enable ingress
-                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sed -i "s/BUILD_NUMBER/$BUILD_NUMBER/g" udacity_Capstone/kube_deployments.yml
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo kubectl apply -f udacity_Capstone/kube_deployments.yml
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl expose deployment udacity-capstone --type=NodePort --port=80
                             sleep 30
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo kubectl apply -f udacity_Capstone/minikube_Ingress.yml
@@ -123,7 +124,7 @@ pipeline {
                     sshagent (credentials: ['kubernates']) {
                         sh '''
                         EC2IP=$(cat /tmp/ec2ip.txt)
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl set image deployment/udacity-capstone  $registry:$BUILD_NUMBER --record
+                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl set image deployment/udacity-capstone  udacity-capstone=$registry:$BUILD_NUMBER --record
                         '''
                     }                        
                 }
