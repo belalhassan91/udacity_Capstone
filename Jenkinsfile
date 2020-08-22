@@ -88,13 +88,14 @@ pipeline {
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
-                  }
+                    }
+                    checkDeployment = $(cat /tmp/checkDeployment.txt)
                 }
             }
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { $(cat /tmp/checkDeployment.txt) == "" }
+                expression { checkDeployment == "False" }
             }
             steps{
                 retry(count: 3) {
