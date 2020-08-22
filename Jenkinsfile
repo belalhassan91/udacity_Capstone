@@ -82,6 +82,8 @@ pipeline {
                 retry(count: 3) {
                     script{
                         sshagent (credentials: ['kubernates']) {
+                            sh 'echo "Sleep 10 Seconds"'
+                            sh 'sleep 10'
                             sh '''
                             EC2IP=$(cat /tmp/ec2ip.txt)
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
@@ -94,8 +96,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo service nginx restart
                             '''
-                        }
-                        sh 'sleep 30'                        
+                        }                        
                     }
                 }
             }
