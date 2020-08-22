@@ -85,7 +85,9 @@ pipeline {
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
                         set -e
-
+                        if [[ "checkDeployment" == null ]]; then
+                        checkDeployment = ""
+                        fi
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
@@ -121,7 +123,7 @@ pipeline {
         }
         stage('Kubernates Rolling Out'){
             when {
-                expression { checkDeployment != "Not Found" }
+                expression { checkDeployment != "" }
             }
             steps{
                 script{
