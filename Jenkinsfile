@@ -83,7 +83,7 @@ pipeline {
                     script{
                         sshagent (credentials: ['kubernates']) {
                             sh 'echo "Sleep 10 Seconds"'
-                            sh 'sleep 10'
+                            sh 'sleep 30'
                             sh '''
                             EC2IP=$(cat /tmp/ec2ip.txt)
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
