@@ -163,4 +163,4 @@ Resources:
           git clone https://github.com/belalhassan91/udacity_Capstone.git
           chown ubuntu:ubuntu -R udacity_Capstone
           cd udacity_Capstone
-          chmod +x run_kubernates.sh        
+          chmod +x *.sh        
