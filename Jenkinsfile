@@ -94,8 +94,8 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo service nginx restart
                             '''
-                            sleep(time: 10, unit: "SECONDS")
-                        }                        
+                        }
+                        sh 'sleep 30'                        
                     }
                 }
             }
