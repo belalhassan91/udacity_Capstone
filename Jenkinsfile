@@ -113,6 +113,21 @@ pipeline {
                     }
                 }
             }
-        }      
+        }
+        stage('Kubernates Rolling Out'){
+            when {
+                expression { checkDeployment != "" }
+            }
+            steps{
+                script{
+                    sshagent (credentials: ['kubernates']) {
+                        sh '''
+                        EC2IP=$(cat /tmp/ec2ip.txt)
+                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl set image $registry:$BUILD_NUMBER
+                        '''
+                    }                        
+                }
+            }
+        }            
     }      
 }
