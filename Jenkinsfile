@@ -5,7 +5,8 @@ pipeline {
             registryToken = credentials('token') 
 	        dockerImage = ''
             key = credentials('key')
-			kubernates = credentials('kubernates') 
+			kubernates = credentials('kubernates')
+            checkDeployment = "" 
 	}
     agent any
     stages {
@@ -66,7 +67,7 @@ pipeline {
                 }
             }
         }
-        stage('Get EC2 IP and start minikube'){
+        stage('Get EC2 IP and Validate Deployment Exist'){
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh ''' 
@@ -75,9 +76,23 @@ pipeline {
                         echo $EC2IP > /tmp/ec2ip.txt
                     '''
                 }
+
+                script{
+                    sshagent (credentials: ['kubernates']) {
+                        sh '''
+                        EC2IP=$(cat /tmp/ec2ip.txt)
+                        checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
+                        rm -f /tmp/checkDeployment.txt
+                        echo $checkDeployment > /tmp/checkDeployment.txt
+                        '''
+                  }
+                }
             }
         }
-        stage('Deploy Kubernates to EC2'){
+        stage('Create Kubernates Deployment to EC2'){
+            when {
+                expression { checkDeployment == '' }
+            }
             steps{
                 retry(count: 3) {
                     script{
