@@ -84,11 +84,6 @@ pipeline {
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
-                        
-                        if [[ "$checkDeployment" == *"refused"* ]]; then
-                            echo "It's there!"
-                            checkDeployment = "Not Found"
-                        fi
                         set -e
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
@@ -99,7 +94,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == "Not Found"}
+                expression { checkDeployment == ""}
             }
             steps{
                 retry(count: 3) {
