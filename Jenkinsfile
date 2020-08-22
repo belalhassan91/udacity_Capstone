@@ -1,3 +1,4 @@
+def checkDeployment
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -5,8 +6,7 @@ pipeline {
             registryToken = credentials('token') 
 	        dockerImage = ''
             key = credentials('key')
-			kubernates = credentials('kubernates')
-            checkDeployment = "" 
+			kubernates = credentials('kubernates') 
 	}
     agent any
     stages {
@@ -91,7 +91,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == '' }
+                expression { checkDeployment == "" }
             }
             steps{
                 retry(count: 3) {
