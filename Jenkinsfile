@@ -85,7 +85,7 @@ pipeline {
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone 2>&1 >/dev/null)
                         set -e
-                        if [[ $checkDeployment == *"The connection to the server localhost:8080 was refused"* ]]; then
+                        if [[ $checkDeployment == *"refused"* ]]; then
                             checkDeployment = ""
                         fi
                         rm -f /tmp/checkDeployment.txt
