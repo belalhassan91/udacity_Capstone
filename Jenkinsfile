@@ -1,4 +1,4 @@
-def checkDeployment = "Not Found"
+def checkDeployment
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -95,7 +95,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == "Not Found" }
+                expression { checkDeployment == "" }
             }
             steps{
                 retry(count: 3) {
