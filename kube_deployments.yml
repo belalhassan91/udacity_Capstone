@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udacity-capstone
+spec:
+  selector:
+    matchLabels:
+      run: udacity-capstone
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: udacity-capstone
+    spec:
+      containers:
+      - name: udacity-capstone
+        image: nginx
+        ports:
+        - containerPort: 80

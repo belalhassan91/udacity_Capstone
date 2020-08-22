@@ -85,6 +85,7 @@ pipeline {
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
 						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl apply -f udacity_Capstone/kube_service.yml
                         screen -dm bash -c ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo sh udacity_Capstone/run_kubernates.sh &
                         '''
                     }
