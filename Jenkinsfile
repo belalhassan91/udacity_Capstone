@@ -1,4 +1,4 @@
-def checkDeployment
+def checkDeployment = "Not Found"
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -85,6 +85,7 @@ pipeline {
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
                         set -e
+
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
@@ -94,7 +95,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == null }
+                expression { checkDeployment == "Not Found" }
             }
             steps{
                 retry(count: 3) {
@@ -120,7 +121,7 @@ pipeline {
         }
         stage('Kubernates Rolling Out'){
             when {
-                expression { checkDeployment != null }
+                expression { checkDeployment != "Not Found" }
             }
             steps{
                 script{
