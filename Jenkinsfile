@@ -82,7 +82,7 @@ pipeline {
                 retry(count: 3) {
                     script{
                         sshagent (credentials: ['kubernates']) {
-                            sh 'echo "Sleep 10 Seconds"'
+                            sh 'echo "Sleep 30 Seconds"'
                             sh 'sleep 30'
                             sh '''
                             EC2IP=$(cat /tmp/ec2ip.txt)
@@ -90,6 +90,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube addons enable ingress
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl expose deployment udacity-capstone --type=NodePort --port=80
+                            sleep 30
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo kubectl apply -f udacity_Capstone/minikube_Ingress.yml
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo sed -i "s/minikube_ip/$(minikube ip)/g" udacity_Capstone/reverse-proxy.conf
                             ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo cp udacity_Capstone/reverse-proxy.conf /etc/nginx/sites-available/
