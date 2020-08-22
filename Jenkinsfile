@@ -78,8 +78,8 @@ pipeline {
             }
         }
         stage('Deploy Kubernates to EC2'){
-            retry(count: 3) {
-                steps{
+            steps{
+                retry(count: 3) {
                     script{
                         sshagent (credentials: ['kubernates']) {
                             sh '''
