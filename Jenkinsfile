@@ -80,8 +80,9 @@ pipeline {
                 script{
                     sshagent (credentials: ['kubernates']) {
                         sh '''
+                        sleep 30
                         EC2IP=$(cat /tmp/ec2ip.txt)
-                        checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
+                        checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone 2>&1 >/dev/null)
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
