@@ -1,4 +1,4 @@
-def checkDeployment
+def checkDeployment = "False"
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -84,13 +84,7 @@ pipeline {
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
-                        checkDeployment = $?
                         set -e
-                        if [ $checkDeployment -ne 0 ] ; then
-                            checkDeployment = "False"
-                        else
-                            checkDeplyment = "True"
-                        fi
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
