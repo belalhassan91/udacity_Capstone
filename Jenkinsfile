@@ -123,7 +123,7 @@ pipeline {
                     sshagent (credentials: ['kubernates']) {
                         sh '''
                         EC2IP=$(cat /tmp/ec2ip.txt)
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl --record deployment.apps/udacity-capstone set image deployment.v1.apps/udacity-capstone $registry=$registry:$BUILD_NUMBER
+                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl set image deployment/udacity-capstone  $registry:$BUILD_NUMBER --record
                         '''
                     }                        
                 }
