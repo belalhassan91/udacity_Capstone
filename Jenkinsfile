@@ -85,7 +85,7 @@ pipeline {
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
                         set -e
-                        if [[ "checkDeployment" == null ]]; then
+                        if [ "$checkDeployment" == null ]; then
                         checkDeployment = ""
                         fi
                         rm -f /tmp/checkDeployment.txt
