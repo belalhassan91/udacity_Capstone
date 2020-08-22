@@ -83,10 +83,10 @@ pipeline {
                         sleep 30
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         set +e 
-                        checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone 2>&1)
+                        checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
                         checkDeployment = $?
                         set -e
-                        if [ $checkDeployment -ne 0 ]; then
+                        if [ $checkDeployment -ne 0 ] ; then
                             checkDeployment = "False"
                         else
                             checkDeplyment = "True"
