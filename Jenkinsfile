@@ -94,7 +94,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == ""}
+                expression { checkDeployment == null }
             }
             steps{
                 retry(count: 3) {
