@@ -78,20 +78,23 @@ pipeline {
             }
         }
         stage('Deploy Kubernates to EC2'){
-            steps{
-                script{
-                    sshagent (credentials: ['kubernates']) {
-                        sh '''
-                        EC2IP=$(cat /tmp/ec2ip.txt)
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube addons enable ingress
-						ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl expose deployment udacity-capstone --type=NodePort --port=80
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl apply -f udacity_Capstone/minikube_Ingress.yml
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo cp udacity_Capstone/reverse-proxy.conf /etc/nginx/sites-available/
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
-                        ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo service nginx restart
-                        '''
+            retry(count: 3) {
+                steps{
+                    script{
+                        sshagent (credentials: ['kubernates']) {
+                            sh '''
+                            EC2IP=$(cat /tmp/ec2ip.txt)
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube start
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP minikube addons enable ingress
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl create deployment udacity-capstone --image=$registry:$BUILD_NUMBER
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl expose deployment udacity-capstone --type=NodePort --port=80
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl apply -f udacity_Capstone/minikube_Ingress.yml
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo sed -i "s/minikube_ip/$(minikube ip)/g" udacity_Capstone/reverse-proxy.conf
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo cp udacity_Capstone/reverse-proxy.conf /etc/nginx/sites-available/
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
+                            ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP sudo service nginx restart
+                            '''
+                        }
                     }
                 }
             }

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: udacity-capstone
-        image: nginx
+        image: captainbelal/udacity_capstone
         ports:
         - containerPort: 80

@@ -145,6 +145,8 @@ Resources:
           #!/bin/bash
           apt-get update -y
           apt install git -y
+          apt-get install nginx -y
+          unlink /etc/nginx/sites-enabled/default
           apt install conntrack -y
           apt-get -y install socat
           apt-get update && apt-get install docker.io -y
