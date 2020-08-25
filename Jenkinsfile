@@ -89,10 +89,10 @@ pipeline {
                         echo $checkDeployment
                         if [ $checkDeployment == ""] ; then
                             echo $checkDeployment
-                            checkDeployment2 = 'False'
+                            ${env.checkDeployment} = 'False'
                         else
                             echo $checkDeployment
-                            checkDeployment2 = 'True'
+                            ${env.checkDeployment}  = 'True'
                         fi
                         '''
                     }
