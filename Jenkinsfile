@@ -93,9 +93,10 @@ pipeline {
                         else
                             echo $checkDeployment
                             set +e
-                            checkDeployment = 'False'
+                            checkDeployment = 'True'
                         fi  
                         rm -f /tmp/checkDeployment.txt
+                        set +e
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
                     }
