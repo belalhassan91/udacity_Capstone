@@ -90,15 +90,20 @@ pipeline {
                             echo $checkDeployment
                             set +e
                             checkDeployment = 'False'
+                            rm -f /tmp/checkDeployment.txt
+                            echo $checkDeployment > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
                             set +e
                             checkDeployment = 'True'
+                            rm -f /tmp/checkDeployment.txt
+                            echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
-                        rm -f /tmp/checkDeployment.txt
-                        set +e
-                        echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
+                        sh "checkDeployment2 = $(cat /tmp/checkDeployment.txt)"
+                        withEnv(['checkDeployment=' + checkDeployment2]) {
+                            sh "echo $checkDeployment" // prints new1
+                        }
                     }
                 }
             }
