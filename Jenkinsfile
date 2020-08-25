@@ -99,7 +99,8 @@ pipeline {
                             echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh "$checkDeployment = $(cat /tmp/checkDeployment.txt)"
+                        echo "$checkDeployment"
+                        sh "$checkDeployment = '$(cat /tmp/checkDeployment.txt)'"
                     }
                 }
             }
