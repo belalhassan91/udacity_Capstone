@@ -50,6 +50,7 @@ pipeline {
                             aws cloudformation create-stack --stack-name udacity-capstone --template-body file://project.yml  --parameters file://project-parameters.json
                             echo "\nWaiting for stack to be created ..."
                             aws cloudformation wait stack-create-complete --stack-name udacity-capstone
+                            sleep 30
                         else
                             echo -e "\nStack exists, attempting update ..."                    
                             set +e
@@ -61,9 +62,9 @@ pipeline {
                             else
                                 echo "\nWaiting for stack update to complete ..."
                                 aws cloudformation wait stack-update-complete --stack-name udacity-capstone
+                                sleep 30                
                             fi                            
                         fi
-                        sleep 30
                     '''
                 }
             }
@@ -88,17 +89,17 @@ pipeline {
                         echo $checkDeployment
                         if [ $checkDeployment == ""] ; then
                             echo $checkDeployment
-                            ${env.checkDeployment} = 'False'
+                            checkDeployment = 'False'
                             rm -f /tmp/checkDeployment.txt
-                            echo ${env.checkDeployment} > /tmp/checkDeployment.txt
+                            echo $checkDeployment > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
-                            ${env.checkDeployment} = 'True'
+                            $checkDeployment = 'True'
                             rm -f /tmp/checkDeployment.txt
-                            echo ${env.checkDeployment} > /tmp/checkDeployment.txt
+                            echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh '${env.checkDeployment} = $(cat /tmp/checkDeployment.txt)'
+                        sh "${env.checkDeployment} = $(cat /tmp/checkDeployment.txt)"
                     
                     }
                 }
