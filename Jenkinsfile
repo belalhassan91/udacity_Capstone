@@ -94,8 +94,6 @@ pipeline {
                             echo $checkDeployment
                             checkDeployment = 'True'
                         fi
-                        rm -f /tmp/checkDeployment.txt
-                        echo $checkDeployment > /tmp/checkDeployment.txt  
                         '''
                     }
                 }
