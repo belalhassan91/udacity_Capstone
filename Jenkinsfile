@@ -98,7 +98,10 @@ pipeline {
                         fi
                         '''
                     }
-                    env.checkDeployment = sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim()
+                    if (sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim() == 'True')
+                    {
+                        echo "True"
+                    }
                     echo "${env.checkDeployment}"
                 }
             }
