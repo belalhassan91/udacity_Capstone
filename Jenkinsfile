@@ -90,14 +90,12 @@ pipeline {
                         if [ $checkDeployment == ""] ; then
                             echo $checkDeployment
                             checkDeployment = 'False'
-                            rm -f /tmp/checkDeployment.txt
-                            echo $checkDeployment > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
                             checkDeployment = 'True'
-                            rm -f /tmp/checkDeployment.txt
-                            echo $checkDeployment > /tmp/checkDeployment.txt
-                        fi  
+                        fi
+                        rm -f /tmp/checkDeployment.txt
+                        echo $checkDeployment > /tmp/checkDeployment.txt  
                         '''
                     }
                 }
