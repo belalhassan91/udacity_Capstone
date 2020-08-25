@@ -94,13 +94,14 @@ pipeline {
                             echo $checkDeployment > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
-                            $checkDeployment = 'True'
+                            checkDeployment = 'True'
                             rm -f /tmp/checkDeployment.txt
                             echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh '"${env.checkDeployment}" = $(cat /tmp/checkDeployment.txt)'
-                    
+                        sh '''
+                            ${env.checkDeployment}" = $(cat /tmp/checkDeployment.txt)
+                        '''
                     }
                 }
             }
