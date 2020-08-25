@@ -100,10 +100,8 @@ pipeline {
                             echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh "checkDeployment2 = $(cat /tmp/checkDeployment.txt)"
-                        withEnv(['checkDeployment=' + checkDeployment2]) {
-                            sh "echo $checkDeployment" // prints new1
-                        }
+                        sh 'env.checkDeployment = $(cat /tmp/checkDeployment.txt)'
+                    
                     }
                 }
             }
