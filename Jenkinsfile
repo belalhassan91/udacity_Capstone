@@ -98,7 +98,7 @@ pipeline {
                         fi
                         '''
                     }
-                    checkDeployment = "${sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim()}"
+                    env.checkDeployment = sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim()
                 }
             }
         }
