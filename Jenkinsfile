@@ -63,6 +63,7 @@ pipeline {
                                 aws cloudformation wait stack-update-complete --stack-name udacity-capstone
                             fi                            
                         fi
+                        sleep 30
                     '''
                 }
             }
@@ -80,7 +81,6 @@ pipeline {
                 script{
                     sshagent (credentials: ['kubernates']) {
                         sh '''
-                        sleep 30
                         EC2IP=$(cat /tmp/ec2ip.txt)
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
@@ -88,19 +88,17 @@ pipeline {
                         echo $checkDeployment
                         if [ $checkDeployment == ""] ; then
                             echo $checkDeployment
-                            set +e
-                            checkDeployment = 'False'
+                            ${env.checkDeployment} = 'False'
                             rm -f /tmp/checkDeployment.txt
-                            echo $checkDeployment > /tmp/checkDeployment.txt
+                            echo ${env.checkDeployment} > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
-                            set +e
-                            checkDeployment = 'True'
+                            ${env.checkDeployment} = 'True'
                             rm -f /tmp/checkDeployment.txt
-                            echo $checkDeployment > /tmp/checkDeployment.txt
+                            echo ${env.checkDeployment} > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh 'env.checkDeployment = $(cat /tmp/checkDeployment.txt)'
+                        sh '${env.checkDeployment} = $(cat /tmp/checkDeployment.txt)'
                     
                     }
                 }
