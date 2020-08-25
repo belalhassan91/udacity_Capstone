@@ -99,7 +99,6 @@ pipeline {
                             echo $checkDeployment > /tmp/checkDeployment.txt
                         fi  
                         '''
-                        sh ' echo "$checkDeployment" '
                     }
                 }
             }
