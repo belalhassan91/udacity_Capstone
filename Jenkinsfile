@@ -109,7 +109,7 @@ pipeline {
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                environment name: 'checkDeployment', value: 'False'
+                 expression { sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim() == 'False' }
             }
             steps{
                 retry(count: 3) {
@@ -135,7 +135,7 @@ pipeline {
         }
         stage('Kubernates Rolling Out'){
             when {
-                environment name: 'checkDeployment', value: 'True'
+                expression { sh(script:'cat /tmp/checkDeployment.txt', returnStdout: true).trim() == 'True' }
             }
             steps{
                 script{
