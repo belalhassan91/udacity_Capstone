@@ -1,4 +1,3 @@
-def checkDeployment = "False"
 pipeline {
     environment { 
 	        registry = "captainbelal/udacity_capstone" 
@@ -6,7 +5,8 @@ pipeline {
             registryToken = credentials('token') 
 	        dockerImage = ''
             key = credentials('key')
-			kubernates = credentials('kubernates') 
+			kubernates = credentials('kubernates')
+            checkDeployment = 'False' 
 	}
     agent any
     stages {
@@ -85,17 +85,26 @@ pipeline {
                         set +e 
                         checkDeployment=$(ssh -o StrictHostKeyChecking=no -l ubuntu $EC2IP kubectl get deployments udacity-capstone)
                         set -e
+                        echo $checkDeployment
+                        if [ $checkDeployment == ""] ; then
+                            echo $checkDeployment
+                            set +e
+                            checkDeployment = 'False'
+                        else
+                            echo $checkDeployment
+                            set +e
+                            checkDeployment = 'False'
+                        fi  
                         rm -f /tmp/checkDeployment.txt
                         echo $checkDeployment > /tmp/checkDeployment.txt
                         '''
                     }
-                    checkDeployment = $(cat /tmp/checkDeployment.txt)
                 }
             }
         }
         stage('Create Kubernates Deployment to EC2'){
             when {
-                expression { checkDeployment == "False" }
+                environment name: 'checkDeployment', value: 'False'
             }
             steps{
                 retry(count: 3) {
@@ -121,7 +130,7 @@ pipeline {
         }
         stage('Kubernates Rolling Out'){
             when {
-                expression { checkDeployment != "False" }
+                environment name: 'checkDeployment', value: 'True'
             }
             steps{
                 script{
