@@ -89,14 +89,16 @@ pipeline {
                         echo $checkDeployment
                         if [ $checkDeployment == ""] ; then
                             echo $checkDeployment
-                            ${env.checkDeployment} = 'False'
+                            rm -f /tmp/checkDeployment.txt
                             echo "False" > /tmp/checkDeployment.txt
                         else
                             echo $checkDeployment
+                            rm -f /tmp/checkDeployment.txt
                             echo "True" > /tmp/checkDeployment.txt
                         fi
                         '''
                     }
+                    env.checkDeployment = "$(cat /tmp/checkDeployment.txt)"
                 }
             }
         }
