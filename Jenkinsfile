@@ -88,13 +88,11 @@ pipeline {
                         set -e
                         echo $checkDeployment
                         if [ $checkDeployment == ""] ; then
-                            set +e 
                             echo $checkDeployment
-                            checkDeployment = 'False'
+                            checkDeployment2 = 'False'
                         else
-                            set +e 
                             echo $checkDeployment
-                            checkDeployment = 'True'
+                            checkDeployment2 = 'True'
                         fi
                         '''
                     }
